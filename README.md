@@ -56,11 +56,14 @@ $ sudo chmod 777 /sys/bus/usb-serial/drivers/ftdi_sio/new_id
 $ sudo echo 0590 00d4 > /sys/bus/usb-serial/drivers/ftdi_sio/new_id
 $ sudo python3 sample_2jciebu.py
 ```
-このケースの場合、デバイスにアクセスできないとか、システムのディレクトリにアクセスできないとか、エラーが出る。このケースでは、最初の三行は、Docker上では実行せずシステムの初期化時にやるべきものだろうと判断し、USBデバイスへのアクセスと、/sys/bus/usb-serialのディレクトリへのアクセス等、エラーメッセージを見て確定する。一旦作業していシェルからExitし、るDocker Imageを一旦削除する。  
-デバイスやSystemのディレクトリの指示はそれぞれ、
-- デバイスの場合、 → --device=... 
-― ディレクトリの場合    -v 
-で、以下のコマンドでDocker Imageを新たに作り直す
+このケースの場合、デバイスにアクセスできないとか、システムのディレクトリにアクセスできないとか、エラーが出る。このケースでは、最初の三行は、Docker上では実行せずシステムの初期化時にやるべきものだろうと判断し、Docker Imageには含めないこととする。  
+※ この3つのコマンド実行は、インターラクティブシェル実行前、コンテナ実行前に行う必要があるので注意が必要。  
+サンプルアプリの中からUSBデバイスへのアクセスと、/sys/bus/usb-serialのディレクトリへのアクセスを行うので、Dockerのコンテナーからもそれらにアクセスできなければならない。インターラクティブシェルの場合、Docker Imageを作成する時点でそれらを指定しなければならないので。アプリ実行して、エラーメッセージを見て、何を指定すればよいかを確定する。確認が終わったら一旦作業していシェルからExitし、Docker Imageを一旦削除する。  
+インターラクティブシェル上で実行するアプリから参照するデバイスやSystemのディレクトリはそれぞれ、
+- デバイスの場合、 → --device=...  
+- ディレクトリの場合    -v  
+
+で作成時にコマンドラインのオプションで指定しなければならないので、以下のコマンドでDocker Imageを新たに作り直す。
 ```sh
 $ sudo docker create --device=/dev/ttyUSB0:/dev/ttyUSB0 -v /lib/modules/:/lib/modules -v /sys/bus/usb-serial/:/sys/bus/usb-serial/ --name custommodule -it balenalib/raspberrypi3:latest /bin/bash
 $ sudo docker start -ia customeodule
@@ -142,6 +145,6 @@ IoT Edge対応モジュールをビルドするDockerfileが出来上がった�
     }
 }
 ```
-こんな風になる。  
+こんな風になる。ディレクトリのバインドは、Bindsに、デバイスは、Devicesに追加する。  
 開発したIoT Edge Module の汎用性が高ければ、ビルド済みのイメージをDocker Hubにおいて公開するとなおよろし。 
 
