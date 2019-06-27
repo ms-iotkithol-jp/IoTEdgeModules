@@ -146,5 +146,6 @@ IoT Edge対応モジュールをビルドするDockerfileが出来上がった�
 }
 ```
 こんな風になる。ディレクトリのバインドは、Bindsに、デバイスは、Devicesに追加する。  
+以上、こんな感じで、[オムロンセンサーのIoT Edge化サンプル](https://github.com/ms-iotkithol-jp/2jciebu-usb-raspberrypi/tree/master/DockerExtension)は作っている。
 開発したIoT Edge Module の汎用性が高ければ、ビルド済みのイメージをDocker Hubにおいて公開するとなおよろし。 
 
